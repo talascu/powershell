@@ -76,9 +76,9 @@ Function Signal-StoppedCSWindowsServices{
             Start-Sleep -s $Delay
             $CurrentTime = Get-Date -Format g
             Write-Host "`n$CurrentTime Check"
-            #$StoppedService = Get-Service | Where-Object {$_.Status -eq "Stopped"} | measure
+            $StoppedService = Get-Service | Where-Object {$_.Status -eq "Stopped"} | measure
             $StoppedService = Get-CsWindowsService | Where-Object {$_.Status -eq "Stopped"} | measure
-            $StoppedServiceCount = $StoppedService.Count
+            #$StoppedServiceCount = $StoppedService.Count
             If ($StoppedServiceCount -eq $NumServices) { 
                 Write-Host "--------------------------> NO MORE ACTIVE COMMUNICATIONS!" 
             } Else { 
