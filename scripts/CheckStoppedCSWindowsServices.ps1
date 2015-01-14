@@ -51,11 +51,12 @@ Function Signal-StoppedCSWindowsServices{
     [CmdletBinding()]
     Param
     (
-        # how many checks per hour
+        # how many checks per hour (min one per hour, max one every 5 sec)
+        [ValidateRange(1,1200)]
         [Int32]$ChecksPerHour = 6,
-        # for how many hours to go on
+        # for how many hours to go on (min one hour, max one day)
+        [ValidateRange(1,24)]
         [Int32]$Hours = 3
-        #[int]$numServices = 18
     )
     Begin 
     {
@@ -80,7 +81,7 @@ Function Signal-StoppedCSWindowsServices{
             $StoppedService = Get-CsWindowsService | Where-Object {$_.Status -eq "Stopped"} | measure
             #$StoppedServiceCount = $StoppedService.Count
             If ($StoppedServiceCount -eq $NumServices) { 
-                Write-Host "--------------------------> NO MORE ACTIVE COMMUNICATIONS!" 
+                Write-Host "--------------------------> NO MORE ACTIVE COMMUNICATIONS!" -foregroundcolor yellow
             } Else { 
                 $NumActiveServices = $NumServices - $StoppedServiceCount 
                 Write-Host "ACTIVE COMMUNICATIONS: still $NumActiveServices active services" 
