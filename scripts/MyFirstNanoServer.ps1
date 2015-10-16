@@ -1,4 +1,17 @@
 ﻿
+
+
+
+# download necessary scripts, see 
+# http://blogs.technet.com/b/nanoserver/archive/2015/06/16/powershell-script-to-build-your-nano-server-image.aspx
+$ConvertWindowsImageScript = 'https://gallery.technet.microsoft.com/scriptcenter/Convert-WindowsImageps1-0fe23a8f/file/59237/7/Convert-WindowsImage.ps1'
+$NanoServerScript = 'http://blogs.technet.com/cfs-filesystemfile.ashx/__key/telligent-evolution-components-attachments/01-10474-00-00-03-65-09-88/NanoServer.ps1'
+$ConvertWindowsImageScriptDest = Join-Path $destination 'Convert-WindowsImage.ps1'
+$NanoServerScriptDest = Join-Path $destination 'NanoServer.ps1'
+Invoke-WebRequest $ConvertWindowsImageScript -OutFile $ConvertWindowsImageScriptDest
+Invoke-WebRequest $NanoServerScript -OutFile $NanoServerScriptDest
+
+
 # avoid digital signature check only for current session
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
@@ -33,6 +46,7 @@ Enter-PSSession -ComputerName $ip -Credential $user
 Exit-PSSession
 
 # run commands remotely
-Invoke-Command -ComputerName 192.168.1.4 -Credential $user -ScriptBlock {Get-Culture}
+Invoke-Command -ComputerName $ip -Credential $user -ScriptBlock {Get-Culture}
+Invoke-Command -ComputerName $ip -Credential $user -ScriptBlock {Stop-Computer -Force}
 
-# try to download file from Internet
+# try to download file from Internet TODO
