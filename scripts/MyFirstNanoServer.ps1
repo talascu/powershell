@@ -51,18 +51,35 @@ $switchName = 'Virtual Switch'
 New-VM –Name $VmName –MemoryStartupBytes $VmMemory –VHDPath $VhdPath -SwitchName $switchName
 Start-VM -Name $VmName
 
+Get-VM -Name $VmName | select -ExpandProperty networkadapters | select vmname, switchname, ipaddresses
+
+# retrieve the IP address of the Nano server VM
+$VmIpAddresses = Get-VM -Name $VmName | select -ExpandProperty networkadapters | select ipaddresses
+$ip = $VmIpAddresses.IPAddresses[0]
+ 
 # to enable  Powershell remoting in a non-domain scenario, add the IP address of the Nano Server to the trusted hosts list
-$ip = “192.168.1.4”
 Enable-PSRemoting -SkipNetworkProfileCheck -Force
 Get-Item wsman:\localhost\Client\TrustedHosts
 Set-Item WSMan:\localhost\Client\TrustedHosts $ip -Concatenate -Force
-#Set-Item WSMan:\localhost\Client\TrustedHosts -Value "192.168.1.4" -Force
 
 # first session on Nano Server through Powershell remoting
 $user = “$ip\Administrator”
 Enter-PSSession -ComputerName $ip -Credential $user
+
 # do some work
-# try to download file from Internet TODO
+Function prompt {“NanoServer> “}
+pwd
+mkdir temp
+cd temp
+New-Item -ItemType File -Name NanoServer.ps1 | Set-Content -Value "Write-Output 'Nano Server Rocks!'"
+.\NanoServer.ps1
+
+Get-Module -ListAvailable
+Get-Command
+Get-Command | measure
+
+
+# close session
 Exit-PSSession
 
 # run commands remotely
