@@ -55,7 +55,15 @@ Get-Item wsman:\localhost\Client\TrustedHosts
 Set-Item WSMan:\localhost\Client\TrustedHosts $ip -Concatenate -Force
 #Set-Item WSMan:\localhost\Client\TrustedHosts -Value "192.168.1.4" -Force
 
-# create and boot Nano Server VM TODO
+# create and boot a Nano Server VM
+$VmName = "FirstNanoVM"
+$VmMemory = 512MB
+$VhdRootPath = Join-Path $workingDirectory "FirstSteps"
+$VhdName = 'FirstSteps.vhd'
+$VhdPath = Join-Path $VhdRootPath $VhdName
+$switchName = 'Virtual Switch'
+New-VM –Name $VmName –MemoryStartupBytes $VmMemory –VHDPath $VhdPath -SwitchName $switchName
+Start-VM -Name $VmName
 
 # first session on Nano Server through Powershell remoting
 $user = “$ip\Administrator”
@@ -65,6 +73,7 @@ Exit-PSSession
 
 # run commands remotely
 Invoke-Command -ComputerName $ip -Credential $user -ScriptBlock {Get-Culture}
-Invoke-Command -ComputerName $ip -Credential $user -ScriptBlock {Stop-Computer -Force}
 
 # try to download file from Internet TODO
+
+Stop-VM -Name $VmName
