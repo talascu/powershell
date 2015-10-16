@@ -42,19 +42,6 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
 New-NanoServerImage -MediaPath $mediaPath -BasePath .\Base -TargetPath .\FirstSteps -ComputerName $nanoComputerName -GuestDrivers -EnableIPDisplayOnBoot
 
-# to add drivers
-#New-NanoServerImage -MediaPath \\Path\To\Media\en_us -BasePath .\Base -TargetPath .\InjectingDrivers -DriversPath .\Extra\Drivers
-
-# to enable  Powershell remoting, add the IP address of the Nano Server to the trusted hosts list
-# from an elevated command line
-# winrm set winrm/config/client @{TrustedHosts="192.168.1.4"}
-# this method through Powershell did not work for me
-$ip = “192.168.1.10”
-Enable-PSRemoting -SkipNetworkProfileCheck -Force
-Get-Item wsman:\localhost\Client\TrustedHosts
-Set-Item WSMan:\localhost\Client\TrustedHosts $ip -Concatenate -Force
-#Set-Item WSMan:\localhost\Client\TrustedHosts -Value "192.168.1.4" -Force
-
 # create and boot a Nano Server VM
 $VmName = "FirstNanoVM"
 $VmMemory = 512MB
@@ -65,15 +52,22 @@ $switchName = 'Virtual Switch'
 New-VM –Name $VmName –MemoryStartupBytes $VmMemory –VHDPath $VhdPath -SwitchName $switchName
 Start-VM -Name $VmName
 
+# to enable  Powershell remoting in a non-domain scenario, add the IP address of the Nano Server to the trusted hosts list
+$ip = “192.168.1.4”
+Enable-PSRemoting -SkipNetworkProfileCheck -Force
+Get-Item wsman:\localhost\Client\TrustedHosts
+Set-Item WSMan:\localhost\Client\TrustedHosts $ip -Concatenate -Force
+#Set-Item WSMan:\localhost\Client\TrustedHosts -Value "192.168.1.4" -Force
+
 # first session on Nano Server through Powershell remoting
 $user = “$ip\Administrator”
 Enter-PSSession -ComputerName $ip -Credential $user
 # do some work
+# try to download file from Internet TODO
 Exit-PSSession
 
 # run commands remotely
 Invoke-Command -ComputerName $ip -Credential $user -ScriptBlock {Get-Culture}
 
-# try to download file from Internet TODO
 
 Stop-VM -Name $VmName
