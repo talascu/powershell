@@ -1,6 +1,18 @@
 ﻿
+# enter the path where the Windows Server Technical Preview ISO has been mounted
+$mediaPath = 'F:\'
 
+# setting up the directory in which the files will be copied and necessary directories will be created
+$workingDirectoryPath = 'C:\temp\'
+$workingDirectoryName = 'NanoServer'
 
+$workingDirectory = Join-Path $workingDirectoryPath $workingDirectoryName
+
+if ( -not (Test-Path -Path $workingDirectory) ) {
+    New-Item -Path $workingDirectoryPath -ItemType Directory -Name $workingDirectoryName
+}
+
+cd $workingDirectory
 
 # download necessary scripts, see 
 # http://blogs.technet.com/b/nanoserver/archive/2015/06/16/powershell-script-to-build-your-nano-server-image.aspx
@@ -24,7 +36,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 # dot source the modified NanoServer.ps1 script, MyNanoServer.ps1
 . .\MyNanoServer.ps1
 
-New-NanoServerImage -MediaPath F:\ -BasePath .\Base -TargetPath .\FirstSteps -ComputerName FirstStepsNano -GuestDrivers -EnableIPDisplayOnBoot
+New-NanoServerImage -MediaPath $mediaPath -BasePath .\Base -TargetPath .\FirstSteps -ComputerName FirstStepsNano -GuestDrivers -EnableIPDisplayOnBoot
 
 # to add drivers
 #New-NanoServerImage -MediaPath \\Path\To\Media\en_us -BasePath .\Base -TargetPath .\InjectingDrivers -DriversPath .\Extra\Drivers
