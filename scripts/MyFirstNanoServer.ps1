@@ -1,6 +1,7 @@
-﻿$nanoComputerName = 'NewNano'
+﻿# choose a name for the Nano Server computer
+$nanoComputerName = 'NewNano'
 
-# enter the path where the Windows Server Technical Preview ISO has been mounted
+# First, mount the Windows Server Technical Preview ISO and enter the path to it
 $mediaPath = 'G:\'
 
 # setting up the directory in which the files will be copied and necessary directories will be created
@@ -68,10 +69,7 @@ Set-Item WSMan:\localhost\Client\TrustedHosts $ip -Concatenate -Force
 
 $user = “$ip\Administrator”
 
-#Enter-PSSession -ComputerName $ip -Credential $user
-
 $ns = New-PSSession -ComputerName $ip -Credential $user
-Get-PSSession -Name $ns.Name
 Enter-PSSession $ns
 
 # do some work
@@ -82,21 +80,25 @@ cd temp
 New-Item -ItemType File -Name NanoServerRocks.ps1 | Set-Content -Value "Write-Output 'Nano Server Rocks!'"
 .\NanoServerRocks.ps1
 
+# show adapter is working
+ping www.google.it
+
+# see what's available in Nano Server
 Get-Module -ListAvailable
 Get-Command
 Get-Command | measure
 
+# exit session
 Exit-PSSession
 
 # show file copy through PS session
-Copy-Item -ToSession $ns -Path '.\Convert-WindowsImage.ps1' -Destination 'C:\Users\Administrator\Documents\temp'
+Copy-Item -FromSession $ns -Path 'C:\Users\Administrator\Documents\temp\NanoServerRocks.ps1' -Destination $workingDirectory
 
-# exit and close session
-Exit-PSSession
+#close session
 Remove-PSSession -Session $ns
 
 
-# run commands remotely
+# alternatively you may run commands remotely
 Invoke-Command -ComputerName $ip -Credential $user -ScriptBlock {Get-Culture}
 
 
