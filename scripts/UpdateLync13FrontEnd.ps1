@@ -33,6 +33,7 @@ if ( -not (Test-Path $localInstallerPath) ) {
 Copy-Item $LyncInstallerRemote -Destination $localInstallerPath
 $localLyncInstaller = Join-Path $localInstallerPath $fileName
 # run the Cumulative Update installer
+# /silentmode /forcereboot
 $localLyncInstaller
 
 # Step 5: disable automatic restart of Lync services on system reboot
