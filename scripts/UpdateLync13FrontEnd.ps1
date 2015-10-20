@@ -12,6 +12,9 @@ $remotePath = '\\share\lync\patching'
 $fileName = 'LyncServerUpdateInstaller.exe'
 $localDirectory = 'lync-patch-october-2015'
 $localPath = 'C:\temp'
+$SqlServerUpdatePath = 'C:\temp'
+$SqlServerUpdateName = '487325_intl_x64_zip.exe'
+$SqlServerUpdateInstaller = Join-Path $SqlServerUpdatePath $SqlServerUpdateName
 
 # Step 1: verify that the FE pool is ready to be updated
 # N.B. this command must be run locally on a Front End server in the pool , cannot be run remotely
@@ -40,11 +43,8 @@ $localLyncInstaller
 Get-CSWindowsService | Set-Service -StartupType 'Disabled'
 
 # Step 6: apply Windows Update and SQL server update
-#$SqlServerUpdatePath = 'C:\temp'
-#$SqlServerUpdateName = 'SQLEXPR_x64_ENU.exe'
-#$SqlServerUpdateInstaller = Join-Path $SqlServerUpdatePath $SqlServerUpdateName
-#$SqlServerUpdateInstaller /ACTION=Patch /allinstances /IAcceptSQLServerLicenseTerms
-#.\SQLEXPR_x64_ENU.exe /ACTION=Patch /allinstances /IAcceptSQLServerLicenseTerms
+# apply SQL server update
+$SqlServerUpdateInstaller /ACTION=Patch /allinstances /IAcceptSQLServerLicenseTerms
 
 # Step 7: re-enable automatic startup of Lync services on system start
 Get-CSWindowsService | Set-Service -StartupType 'Automatic'
