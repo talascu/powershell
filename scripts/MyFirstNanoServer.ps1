@@ -7,7 +7,6 @@ $mediaPath = 'G:\'
 # setting up the directory in which the files will be copied and necessary directories will be created
 $workingDirectoryPath = 'C:\temp\'
 $workingDirectoryName = 'NanoServer'
-
 $workingDirectory = Join-Path $workingDirectoryPath $workingDirectoryName
 
 if ( -not (Test-Path -Path $workingDirectory) ) {
