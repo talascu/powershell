@@ -4,6 +4,7 @@ Import-Module Lync
 
 # address to download Lync Update Installer
 # http://www.microsoft.com/en-us/download/details.aspx?id=36820
+# http://hotfixv4.microsoft.com/SQL%202012/sp2/ql11Sp2Cu8x64/11.0.5634.1/free/487325_intl_x64_zip.exe
 
 $principalServer = 'BE01.contoso.com'
 $mirrorServer = 'BE02.contoso.com'
